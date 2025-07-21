@@ -1,0 +1,38 @@
+.tripsContainer {
+  text-align: center;
+  padding: 24px;
+}
+
+.tripsContainer div:hover {
+  transform: scale(1.05);
+  transition: 0.6s;
+}
+
+.tripBox {
+  border-radius: 24px;
+  border: solid black 2px;
+  text-align: center;
+  padding: 32px;
+  margin-top: 80px;
+}
+
+.tripForm {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.formSection {
+}
+
+.formSection input {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.tripBox a {
+  color: blue;
+}
+
+.tripBox a:hover {
+  cursor: pointer;
+}

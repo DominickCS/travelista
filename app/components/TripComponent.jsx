@@ -1,21 +1,14 @@
-'use client'
 import styles from "./TripComponent.module.css"
-import { createClient } from '@supabase/supabase-js'
-import { useState, useEffect } from 'react'
+import { redirect } from 'next/navigation'
+import { createClient } from '../utils/supabase/server'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+export default async function TripComponent() {
 
-export default function TripComponent() {
-  const [locationName, setLocationName] = useState(null)
-  const [tripDate, setTripDate] = useState(null)
-  const [tripCompleted, setTripCompleted] = useState(false)
-  const [tripList, setTripList] = useState(null)
-
-  useEffect(() => {
-    updateTripList()
-  }, []);
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.getUser()
+  if (error || !data?.user) {
+    redirect('/login')
+  }
 
   async function updateTripList() {
     const { data, error } = await supabase.from('TRIPSCHEMA').select('*')
@@ -23,10 +16,13 @@ export default function TripComponent() {
       console.log("Error inside of updateTripList(): " + error)
     }
     let sortedData = data.sort(function (a, b) { return a.id - b.id })
-    setTripList(sortedData)
+    console.log(sortedData)
   }
 
   async function addNewTrip(locationName, tripDate, tripCompleted) {
+    locationName = formData.get('locationInput')
+    tripDate = formData.get('tripDate')
+    tripCompleted = formData.get('tripcompletedInput')
     resetForm()
     const { tripData, error } = await supabase.from('TRIPSCHEMA').insert([{ location_name: locationName, trip_date: tripDate, trip_completed: tripCompleted }]).select()
     if (error) {
@@ -36,6 +32,8 @@ export default function TripComponent() {
   }
 
   async function updateCompletedBox(tripCompleted, id) {
+
+    tripCompleted = formData.get('tripcompletedInput')
     const { error } = await supabase.from('TRIPSCHEMA').upsert([{ id: id, trip_completed: tripCompleted }]).select()
     if (error) {
       console.log("Error inside updateCompletedBox(): " + error)
@@ -52,6 +50,7 @@ export default function TripComponent() {
 
   return (
     <>
+      <h1>Travelista - Your Personal Travel Tool</h1>
       <form className={styles.tripForm}>
         <div className={styles.formSection}>
           <label htmlFor='locationName'>Location Name</label>
@@ -63,29 +62,29 @@ export default function TripComponent() {
         </div>
         <div className={styles.formSection}>
           <label htmlFor='tripCompleted'>Trip Completed?</label>
-          <input id="tripcompletedInput" type='checkbox' onChange={() => setTripCompleted(!tripCompleted)} value={tripCompleted} />
+          <input id="tripcompletedInput" name="tripcompletedInput" type='checkbox' />
         </div>
-        <button type='submit' onClick={() => addNewTrip(locationName, tripDate, tripCompleted)}>Create Trip!</button>
+        <button type='submit' formAction={() => addNewTrip(locationName, tripDate, tripCompleted)}>Create Trip!</button>
       </form>
       <hr />
-      <div>
-        {tripList ? (
-          <div className={styles.tripsContainer}>
-            <h2>Your Getaways</h2>
-            <hr />
-            {tripList.map((trip, id) => (
-              <div className={styles.tripBox} key={id}>
-                <p>Trip ID: {trip.id}</p>
-                <p>Trip Location: {trip.location_name}</p>
-                <div>
-                  <a onClick={() => updateCompletedBox(!trip.trip_completed, trip.id)}>Trip Completed: {trip.trip_completed == true ? "✓" : "✕"}</a>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : ("Loading trips..."
-        )}
-      </div>
+      {/* <div> */}
+      {/*   {tripList ? ( */}
+      {/*     <div className={styles.tripsContainer}> */}
+      {/*       <h2>Your Getaways</h2> */}
+      {/*       <hr /> */}
+      {/*       {tripList.map((trip, id) => ( */}
+      {/*         <div className={styles.tripBox} key={id}> */}
+      {/*           <p>Trip ID: {trip.id}</p> */}
+      {/*           <p>Trip Location: {trip.location_name}</p> */}
+      {/*           <div> */}
+      {/*             <a onClick={() => updateCompletedBox(!trip.trip_completed, trip.id)}>Trip Completed: {trip.trip_completed == true ? "✓" : "✕"}</a> */}
+      {/*           </div> */}
+      {/*         </div> */}
+      {/*       ))} */}
+      {/*     </div> */}
+      {/*   ) : ("Loading trips..." */}
+      {/*   )} */}
+      {/* </div> */}
     </>
   )
 }

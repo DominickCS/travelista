@@ -19,6 +19,9 @@ export default function TripComponent() {
 
   async function updateTripList() {
     const { data, error } = await supabase.from('TRIPSCHEMA').select('*')
+    if (error) {
+      console.log("Error inside of updateTripList(): " + error)
+    }
     let sortedData = data.sort(function (a, b) { return a.id - b.id })
     setTripList(sortedData)
   }
@@ -26,11 +29,17 @@ export default function TripComponent() {
   async function addNewTrip(locationName, tripDate, tripCompleted) {
     resetForm()
     const { tripData, error } = await supabase.from('TRIPSCHEMA').insert([{ location_name: locationName, trip_date: tripDate, trip_completed: tripCompleted }]).select()
+    if (error) {
+      console.log("Error inside of addNewTrip(): " + error)
+    }
     updateTripList()
   }
 
   async function updateCompletedBox(tripCompleted, id) {
-    const { tripData, error } = await supabase.from('TRIPSCHEMA').upsert([{ id: id, trip_completed: tripCompleted }]).select()
+    const { error } = await supabase.from('TRIPSCHEMA').upsert([{ id: id, trip_completed: tripCompleted }]).select()
+    if (error) {
+      console.log("Error inside updateCompletedBox(): " + error)
+    }
     updateTripList()
   }
 

@@ -1,4 +1,3 @@
-'use server'
 import styles from "../components/TripComponent.module.css"
 import { redirect } from 'next/navigation'
 import { createClient } from '../utils/supabase/server'

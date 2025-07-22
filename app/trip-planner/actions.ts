@@ -9,7 +9,7 @@ export async function addNewTrip(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   let userID = user.id;
   let locationName = formData.get('locationInput')
-  let tripDate = formData.get('tripDate')
+  let tripDate = formData.get('tripdateInput')
   let tripCompleted = formData.get('tripcompletedInput')
   const { error } = await supabase.from('TRIPSCHEMA').insert([{ user_id: userID, location_name: locationName, trip_date: tripDate, trip_completed: tripCompleted }]).select()
   if (error) {

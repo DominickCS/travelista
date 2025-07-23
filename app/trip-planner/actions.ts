@@ -2,24 +2,23 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '../utils/supabase/server'
 
-const supabase = await createClient()
-
-const { data: { user } } = await supabase.auth.getUser()
-let userID = user.id
-
 export async function addNewTrip(formData: FormData) {
+  const supabase = await createClient()
+  let { data: { user } } = await supabase.auth.getUser()
   let locationName = formData.get('locationInput')
   let tripDate = formData.get('tripdateInput')
   let tripCompleted = formData.get('tripcompletedInput')
-  const { error } = await supabase.from('TRIPSCHEMA').insert([{ user_id: userID, location_name: locationName, trip_date: tripDate, trip_completed: tripCompleted }]).select()
+  const { error } = await supabase.from('TRIPSCHEMA').insert([{ user_id: user.id, location_name: locationName, trip_date: tripDate, trip_completed: tripCompleted }]).select()
   if (error) {
     console.log("Error inside of addNewTrip(): " + error.message)
   }
 }
 
 export async function getTripData() {
-  console.log("Current User Requesting Data: " + userID)
-  const { data, error } = await supabase.from('TRIPSCHEMA').select('*').eq("user_id", userID)
+  const supabase = await createClient()
+  let { data: { user } } = await supabase.auth.getUser()
+  console.log("Current User Requesting Data: " + user.id)
+  const { data, error } = await supabase.from('TRIPSCHEMA').select('*').eq("user_id", user.id)
   if (error) {
     console.log("Error inside of updateTripList(): " + error)
   }
@@ -35,11 +34,13 @@ export async function getTripData() {
 // }
 
 export async function logOut() {
+  const supabase = await createClient()
+  let { data: { user } } = await supabase.auth.getUser()
   let { error } = await supabase.auth.signOut();
-
   if (error) {
     console.log("Error indside of logOut(): " + error.message)
   }
+  console.log("Logging Out: " + user.id)
 
   redirect("/login")
 }

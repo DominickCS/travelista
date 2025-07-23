@@ -21,8 +21,8 @@ export default async function TripComponent() {
       </div>
       <form className={styles.tripForm}>
         <div className={styles.formSection}>
-          <label htmlFor='locationName'>Location Name</label>
-          <input id="locationInput" type='text' name="locationInput" required />
+          <label htmlFor='locationName'>Trip Name</label>
+          <input id="tripNameInput" type='text' name="tripNameInput" required />
         </div>
         <div className={styles.formSection}>
           <label htmlFor='tripDate'>Trip Date</label>
@@ -41,10 +41,11 @@ export default async function TripComponent() {
             <h2>Your Travel List</h2>
             {tripList.map((trip) => (
               <div className={styles.tripBox} key={trip}>
-                <h3>{trip.location_name}</h3>
+                <h3>{trip.trip_name}</h3>
                 <hr />
                 <h4>Trip Date</h4>
                 <p>{trip.trip_date}</p>
+                <p>{trip.trip_completed ? "Trip Completed" : "Trip Planned"}</p>
                 <div className={styles.tripDetailsContainer}>
                   <Link href={`/trip-details/${trip.id}`}>Trip Details</Link>
                 </div>

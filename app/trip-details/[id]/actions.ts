@@ -1,9 +1,9 @@
 'use server'
 import { redirect } from 'next/navigation'
-import { createClient } from '../utils/supabase/server'
+import { createClient } from '../../utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function addNewTrip(formData: FormData) {
+export async function modifyTripDetails(formData: FormData) {
   const supabase = await createClient()
   let { data: { user } } = await supabase.auth.getUser()
   let tripName = formData.get('tripNameInput')

@@ -1,0 +1,14 @@
+.titleBar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.titleBar button {
+  padding: 0;
+  height: 32px;
+}
+
+.tripDetailInput {
+  display: none;
+}

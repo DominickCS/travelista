@@ -36,3 +36,7 @@ export async function logOut() {
 
   redirect("/login")
 }
+
+export async function goHome() {
+  redirect("/")
+}

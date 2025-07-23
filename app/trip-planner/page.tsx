@@ -1,7 +1,7 @@
 import styles from "./page.module.css"
 import { redirect } from 'next/navigation'
 import { createClient } from '../utils/supabase/server'
-import { addNewTrip, getTripData, logOut } from './actions'
+import { addNewTrip, getTripData, goHome, logOut } from './actions'
 import Link from "next/link"
 
 export default async function TripComponent() {
@@ -15,8 +15,8 @@ export default async function TripComponent() {
 
   return (
     <>
-      <div>
-        <h1>Travelista - Your Personal Travel Tool</h1>
+      <div className={styles.titleBar}>
+        <h1 className={styles.title} onClick={goHome}>Travelista | Your Personal Travel Tool</h1>
         <button onClick={logOut}>Log Out</button>
       </div>
       <form className={styles.tripForm}>
@@ -38,14 +38,15 @@ export default async function TripComponent() {
       <div>
         {tripList ? (
           <div className={styles.tripsContainer}>
-            <h2>Your Getaways</h2>
-            <hr />
+            <h2>Your Travel List</h2>
             {tripList.map((trip) => (
               <div className={styles.tripBox} key={trip}>
                 <h3>{trip.location_name}</h3>
+                <hr />
+                <h4>Trip Date</h4>
                 <p>{trip.trip_date}</p>
                 <div className={styles.tripDetailsContainer}>
-                  <Link href={"trip-details"}>Trip Details</Link>
+                  <Link href={`/trip-details/${trip.id}`}>Trip Details</Link>
                 </div>
               </div>
             ))}

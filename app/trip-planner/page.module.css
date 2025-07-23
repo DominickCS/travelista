@@ -3,6 +3,16 @@
   padding: 24px;
 }
 
+.title {
+  color: blue;
+}
+
+.title:hover {
+  cursor: pointer;
+  color: black;
+  transition: 1s;
+}
+
 /* .tripsContainer div:hover { */
 /*   transform: scale(1.05); */
 /*   transition: 0.6s; */
@@ -40,4 +50,15 @@
 .tripDetailsContainer *{
   margin-left: 8px;
   margin-right: 8px;
+}
+
+.titleBar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.titleBar button {
+  padding: 0;
+  height: 32px;
 }

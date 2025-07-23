@@ -1,7 +1,14 @@
-
+import { redirect } from 'next/navigation'
+import { createClient } from '../utils/supabase/server'
 import { login, signup } from './actions'
 
-export default function page() {
+export default async function page() {
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.getUser()
+  if (data?.user) {
+    redirect('/trip-planner')
+  }
+
 
   return (
     <>

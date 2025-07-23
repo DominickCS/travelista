@@ -1,4 +1,5 @@
 'use server'
+import { redirect } from 'next/navigation'
 import { createClient } from '../utils/supabase/server'
 
 const supabase = await createClient()
@@ -17,3 +18,12 @@ export async function addNewTrip(formData: FormData) {
   }
 }
 
+export async function logOut() {
+  let { error } = await supabase.auth.signOut();
+
+  if (error) {
+    console.log("Error indside of logOut(): " + error.message)
+  }
+
+  redirect("/login")
+}

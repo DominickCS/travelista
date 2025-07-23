@@ -1,10 +1,15 @@
 import styles from "../components/TripComponent.module.css"
 import { redirect } from 'next/navigation'
 import { createClient } from '../utils/supabase/server'
-import { addNewTrip } from './actions'
+import { addNewTrip, logOut } from './actions'
 
 export default async function TripComponent() {
   const supabase = await createClient()
+  const { data, error } = await supabase.auth.getUser()
+  if (error || !data?.user) {
+    redirect('/login')
+  }
+
 
   async function updateTripList() {
     const { data, error } = await supabase.from('TRIPSCHEMA').select('*')
@@ -26,7 +31,10 @@ export default async function TripComponent() {
 
   return (
     <>
-      <h1>Travelista - Your Personal Travel Tool</h1>
+      <div>
+        <h1>Travelista - Your Personal Travel Tool</h1>
+        <button onClick={logOut}>Log Out</button>
+      </div>
       <form className={styles.tripForm}>
         <div className={styles.formSection}>
           <label htmlFor='locationName'>Location Name</label>

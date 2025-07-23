@@ -20,18 +20,10 @@ export async function getTripData() {
   console.log("Current User Requesting Data: " + user.id)
   const { data, error } = await supabase.from('TRIPSCHEMA').select('*').eq("user_id", user.id)
   if (error) {
-    console.log("Error inside of updateTripList(): " + error)
+    console.log("Error inside of updateTripList(): " + error.message)
   }
   return data.sort(function (a, b) { return a.id - b.id })
 }
-
-// export async function updateCompletedBox(tripCompleted: boolean, id: number) {
-//   tripCompleted = !tripCompleted
-//   const { error } = await supabase.from('TRIPSCHEMA').upsert([{ id: id, trip_completed: tripCompleted }]).select()
-//   if (error) {
-//     console.log("Error inside updateCompletedBox(): " + error)
-//   }
-// }
 
 export async function logOut() {
   const supabase = await createClient()

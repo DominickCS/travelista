@@ -2,6 +2,7 @@ import styles from "./page.module.css"
 import { redirect } from 'next/navigation'
 import { createClient } from '../utils/supabase/server'
 import { addNewTrip, getTripData, logOut } from './actions'
+import Link from "next/link"
 
 export default async function TripComponent() {
   const supabase = await createClient()
@@ -39,14 +40,13 @@ export default async function TripComponent() {
           <div className={styles.tripsContainer}>
             <h2>Your Getaways</h2>
             <hr />
-            {tripList.map((trip, id) => (
-              <div className={styles.tripBox} key={id}>
-                <p>Trip ID: {trip.id}</p>
-                <p>Trip Location: {trip.location_name}</p>
-                <p>Trip Completed: {trip.trip_completed == true ? "✓" : "✕"}</p>
-                {/* <div> */}
-                {/*   <a onClick={() => updateCompletedBox(trip.trip_completed, trip.id)}>Trip Completed: {trip.trip_completed == true ? "✓" : "✕"}</a> */}
-                {/* </div> */}
+            {tripList.map((trip) => (
+              <div className={styles.tripBox} key={trip}>
+                <h3>{trip.location_name}</h3>
+                <p>{trip.trip_date}</p>
+                <div className={styles.tripDetailsContainer}>
+                  <Link href={"trip-details"}>Trip Details</Link>
+                </div>
               </div>
             ))}
           </div>

@@ -1,9 +1,9 @@
 import { createClient } from '../../utils/supabase/server';
 import styles from './page.module.css'
-import { logOut, goHome } from '../../trip-planner/actions';
-import { modifyTripDetails } from './actions';
+import { modifyTripDetails, logOut, goHome } from './actions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import TripToDo from '../components/tripToDo';
 
 export default async function TripDetailsPage({ params }: { params: { id: string } }) {
   const { id } = await params
@@ -45,6 +45,7 @@ export default async function TripDetailsPage({ params }: { params: { id: string
         <p>Date: {trip.trip_date}</p>
         <p>Description: {tripDetails.trip_description}</p>
         <p>Trip Notes: {tripDetails.trip_notes}</p>
+        <TripToDo />
         <p>Trip TO-DO: {tripDetails.trip_to_do}</p>
         <p>Trip Itinerary: {tripDetails.trip_itinerary}</p>
         <div>

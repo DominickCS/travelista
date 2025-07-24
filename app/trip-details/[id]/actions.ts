@@ -25,17 +25,6 @@ export async function modifyTripDetails(formData: FormData) {
   revalidatePath(`/trip-details/${data[0].id}`)
 }
 
-// export async function getTripData() {
-//   const supabase = await createClient()
-//   let { data: { user } } = await supabase.auth.getUser()
-//   console.log("Current User Requesting Data: " + user.id)
-//   const { data, error } = await supabase.from('TRIPSCHEMA').select('*').eq("user_id", user.id)
-//   if (error) {
-//     console.log("Error inside of updateTripList(): " + error.message)
-//   }
-//   return data.sort(function (a, b) { return a.id - b.id })
-// }
-
 export async function logOut() {
   const supabase = await createClient()
   let { data: { user } } = await supabase.auth.getUser()

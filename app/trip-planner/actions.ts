@@ -9,9 +9,13 @@ export async function addNewTrip(formData: FormData) {
   let tripName = formData.get('tripNameInput')
   let tripDate = formData.get('tripdateInput')
   let tripCompleted = formData.get('tripcompletedInput')
-  const { error } = await supabase.from('TRIPSCHEMA').insert([{ user_id: user.id, trip_name: tripName, trip_date: tripDate, trip_completed: tripCompleted }]).select()
-  if (error) {
-    console.log("Error inside of addNewTrip(): " + error.message)
+  const { error: tripSchemaError } = await supabase.from('TRIPSCHEMA').insert([{ user_id: user.id, trip_name: tripName, trip_date: tripDate, trip_completed: tripCompleted }]).select()
+  const { error: tripDetailSchemaError } = await supabase.from('TRIPDETAILSCHEMA').insert([{ trip_description: null, trip_notes: null, trip_to_do: null, trip_itinerary: null, user_id: user.id }])
+  if (tripSchemaError) {
+    console.log("Error inside of addNewTrip() via the 'TRIPSCHEMA' DB : " + tripSchemaError.message)
+  }
+  if (tripDetailSchemaError) {
+    console.log("Error inside of addNewTrip via the 'TRIPDETAILSCHEMA': " + tripDetailSchemaError.message)
   }
   revalidatePath("/trip-planner")
 }

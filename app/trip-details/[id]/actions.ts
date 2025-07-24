@@ -6,26 +6,35 @@ import { revalidatePath } from 'next/cache'
 export async function modifyTripDetails(formData: FormData) {
   const supabase = await createClient()
   let { data: { user } } = await supabase.auth.getUser()
+  const { data } = await supabase.from('TRIPSCHEMA').select('id')
+
   let tripName = formData.get('tripNameInput')
   let tripDate = formData.get('tripdateInput')
-  let tripCompleted = formData.get('tripcompletedInput')
-  const { error } = await supabase.from('TRIPSCHEMA').insert([{ user_id: user.id, trip_name: tripName, trip_date: tripDate, trip_completed: tripCompleted }]).select()
-  if (error) {
-    console.log("Error inside of addNewTrip(): " + error.message)
+  let tripDescription = formData.get('tripDescriptionInput')
+  let tripNotes = formData.get('tripNotesInput')
+  const { error: tripSchemaError } = await supabase.from('TRIPSCHEMA').upsert([{ id: data[0].id, user_id: user.id, trip_name: tripName, trip_date: tripDate }]).select()
+  if (tripSchemaError) {
+    console.log("Error inside of modifyTripDetails() via the 'TRIPSCHEMA' DB: " + tripSchemaError.message)
   }
-  revalidatePath("/trip-planner")
+
+  const { error: tripDetailSchemaError } = await supabase.from("TRIPDETAILSCHEMA").upsert([{ id: data[0].id, user_id: user.id, trip_description: tripDescription, trip_notes: tripNotes }]).select()
+  if (tripDetailSchemaError) {
+    console.log("Error inside of modifyTripDetails() via the 'TRIPDETAILSCHEMA' DB: " + tripDetailSchemaError.message)
+  }
+
+  revalidatePath(`/trip-details/${data[0].id}`)
 }
 
-export async function getTripData() {
-  const supabase = await createClient()
-  let { data: { user } } = await supabase.auth.getUser()
-  console.log("Current User Requesting Data: " + user.id)
-  const { data, error } = await supabase.from('TRIPSCHEMA').select('*').eq("user_id", user.id)
-  if (error) {
-    console.log("Error inside of updateTripList(): " + error.message)
-  }
-  return data.sort(function (a, b) { return a.id - b.id })
-}
+// export async function getTripData() {
+//   const supabase = await createClient()
+//   let { data: { user } } = await supabase.auth.getUser()
+//   console.log("Current User Requesting Data: " + user.id)
+//   const { data, error } = await supabase.from('TRIPSCHEMA').select('*').eq("user_id", user.id)
+//   if (error) {
+//     console.log("Error inside of updateTripList(): " + error.message)
+//   }
+//   return data.sort(function (a, b) { return a.id - b.id })
+// }
 
 export async function logOut() {
   const supabase = await createClient()

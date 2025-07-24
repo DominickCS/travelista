@@ -21,16 +21,16 @@ export default async function TripComponent() {
       </div>
       <form className={styles.tripForm}>
         <div className={styles.formSection}>
-          <label htmlFor='locationName'>Trip Name</label>
+          <label htmlFor='tripNameInput'>Trip Name</label>
           <input id="tripNameInput" type='text' name="tripNameInput" required />
         </div>
         <div className={styles.formSection}>
-          <label htmlFor='tripDate'>Trip Date</label>
+          <label htmlFor='tripdateInput'>Trip Date</label>
           <input id="tripdateInput" type='date' name="tripdateInput" required />
         </div>
         <div className={styles.formSection}>
-          <label htmlFor='tripCompleted'>Trip Completed?</label>
-          <input id="tripcompletedInput" name="tripcompletedInput" type='checkbox' />
+          <label htmlFor='tripcompletedInput'>Trip Completed?</label>
+          {/* <input onChange={(e) => { e.target.value = "completed" }} id="tripcompletedInput" name="tripcompletedInput" type='checkbox' defaultValue={"not completed"} /> */}
         </div>
         <button formAction={addNewTrip}>Create Trip!</button>
       </form>
@@ -40,12 +40,12 @@ export default async function TripComponent() {
           <div className={styles.tripsContainer}>
             <h2>Your Travel List</h2>
             {tripList.map((trip) => (
-              <div className={styles.tripBox} key={trip}>
+              <div className={styles.tripBox} key={trip.id}>
                 <h3>{trip.trip_name}</h3>
                 <hr />
                 <h4>Trip Date</h4>
                 <p>{trip.trip_date}</p>
-                <p>{trip.trip_completed ? "Trip Completed" : "Trip Planned"}</p>
+                <p>{trip.trip_completed == "completed" ? "Trip Completed" : "Trip Planned"}</p>
                 <div className={styles.tripDetailsContainer}>
                   <Link href={`/trip-details/${trip.id}`}>Trip Details</Link>
                 </div>

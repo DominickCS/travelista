@@ -1,30 +1,36 @@
-import { createClient } from '../../utils/supabase/client';
+import { createClient } from '../../utils/supabase/server';
 import styles from './page.module.css'
 import { logOut, goHome } from '../../trip-planner/actions';
-import { notFound } from 'next/navigation';
+import { modifyTripDetails } from './actions';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 export default async function TripDetailsPage({ params }: { params: { id: string } }) {
-  const supabase = createClient();
+  const { id } = await params
+  const supabase = await createClient();
+
+  // let { data: { user } } = await supabase.auth.getUser()
 
   const { data: trip, error: tripSchemaError } = await supabase
     .from('TRIPSCHEMA')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', { id }.id)
     .single();
 
   if (tripSchemaError) {
     console.log("Error in DB Query: TABLE 'TRIPSCHEMA'" + tripSchemaError.message)
+    return notFound()
   }
 
   const { data: tripDetails, error: tripDetailsError } = await supabase
     .from('TRIPDETAILSCHEMA')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', { id }.id)
     .single();
 
   if (tripDetailsError) {
-    console.log("Error in DB Query: TABLE 'TRIPSCHEMA'" + tripDetailsError.message)
+    console.log("Error in DB Query: TABLE 'TRIPDETAILSCHEMA'" + tripDetailsError.message)
+    return notFound()
   }
 
   return (
@@ -37,9 +43,22 @@ export default async function TripDetailsPage({ params }: { params: { id: string
         <Link href={"/trip-planner"}>Back to Trips</Link>
         <h2>{trip.trip_name}</h2>
         <p>Date: {trip.trip_date}</p>
-        <p>Description: {trip.description}</p>
+        <p>Description: {tripDetails.trip_description}</p>
+        <p>Trip Notes: {tripDetails.trip_notes}</p>
+        <p>Trip TO-DO: {tripDetails.trip_to_do}</p>
+        <p>Trip Itinerary: {tripDetails.trip_itinerary}</p>
         <div>
-          <input type='text' className={styles.tripDetailInput} name='tripDescription' />
+          <form id='tripDetailForm' className={styles.tripDetailInput}>
+            <label htmlFor='tripNameInput'>Modify Trip Name:</label>
+            <input type='text' name='tripNameInput' />
+            <label htmlFor='tripdateInput'>Modify Trip Date:</label>
+            <input type='date' name='tripdateInput' />
+            <label htmlFor='tripDescriptionInput'>Modify Trip Description:</label>
+            <input type='text' name='tripDescriptionInput' />
+            <label htmlFor='tripNotesInput'>Modify Trip Notes:</label>
+            <input type='text' name='tripNotesInput' />
+            <button formAction={modifyTripDetails}>Submit changes</button>
+          </form>
         </div>
       </div>
     </>

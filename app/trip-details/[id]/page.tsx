@@ -45,8 +45,13 @@ export default async function TripDetailsPage({ params }: { params: { id: string
         <p>Date: {trip.trip_date}</p>
         <p>Description: {tripDetails.trip_description}</p>
         <p>Trip Notes: {tripDetails.trip_notes}</p>
+        <ul>
+          <h3>TO-DO</h3>
+          {tripDetails.trip_to_do.map((task) => (
+            <li key={task.id}>{task.task}</li>
+          ))}
+        </ul>
         <TripToDo />
-        <p>Trip TO-DO: {tripDetails.trip_to_do}</p>
         <p>Trip Itinerary: {tripDetails.trip_itinerary}</p>
         <div>
           <form id='tripDetailForm' className={styles.tripDetailInput}>

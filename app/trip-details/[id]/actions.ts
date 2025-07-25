@@ -25,6 +25,20 @@ export async function modifyTripDetails(formData: FormData) {
   revalidatePath(`/trip-details/${data[0].id}`)
 }
 
+export async function confirmToDoList(taskList) {
+  console.log(taskList)
+  const supabase = await createClient()
+  let { data: { user } } = await supabase.auth.getUser()
+
+  const { data } = await supabase.from('TRIPSCHEMA').select('id')
+  const { error: tripDetailSchemaError } = await supabase.from("TRIPDETAILSCHEMA").upsert([{ id: data[0].id, user_id: user.id, trip_to_do: taskList }]).select()
+  if (tripDetailSchemaError) {
+    console.log("Error inside of modifyTripDetails() via the 'TRIPDETAILSCHEMA' DB: " + tripDetailSchemaError.message)
+  }
+
+  revalidatePath(`/trip-details/${data[0].id}`)
+}
+
 export async function logOut() {
   const supabase = await createClient()
   let { data: { user } } = await supabase.auth.getUser()

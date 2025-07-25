@@ -1,5 +1,6 @@
 'use client'
 import { useRef, useState } from 'react'
+import { confirmToDoList } from '../[id]/actions';
 
 export default function TripToDo() {
   const inputRef = useRef(null);
@@ -10,7 +11,7 @@ export default function TripToDo() {
     setToDo(toDo.filter(task => task.id !== taskID))
   }
 
-  function addTask(taskToDO) {
+  async function addTask(taskToDO) {
     setToDo([
       ...toDo,
       {
@@ -19,14 +20,15 @@ export default function TripToDo() {
       }
     ]);
     setTaskID(taskID + 1)
-    console.log(toDo)
+    confirmToDoList(toDo)
   }
+
+  // TODO move addTask to actions for server rendering
 
   return (
     <>
       <div>
-        <h3>TRIP TO-DO:</h3>
-        <input type='text' name='taskToDO' ref={inputRef} />
+        <input type='text' name='taskToDO' ref={inputRef} placeholder='Start typing a task...' />
         <button onClick={() => addTask(inputRef.current.value)}>Add Task</button>
       </div>
       <div>
@@ -35,6 +37,7 @@ export default function TripToDo() {
             <li key={toDo.id} onClick={() => deleteTask(toDo.id)}>{toDo.task}</li>
           ))}
         </ul>
+        {/* <button onClick={() => confirmToDoList(toDo)}>Confirm Task List</button> */}
       </div>
     </>
   )

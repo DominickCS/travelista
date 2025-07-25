@@ -23,7 +23,7 @@ export default function TripToDo() {
     confirmToDoList(toDo)
   }
 
-  // TODO move addTask to actions for server rendering
+  // TODO move `addTask` && `deleteTask` to actions for server rendering
 
   return (
     <>
